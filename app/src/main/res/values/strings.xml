@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">Know Your Government</string>
+    <string name="api_url">Google Civic Information API</string>
+</resources>
