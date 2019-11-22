@@ -23,6 +23,7 @@ public class AsyncOfficialsLoader extends AsyncTask<String, Integer, String> {
 	private static final String TAG = "AsyncOfficialsLoader";
 
 	private MainActivity mainActivity;
+	private static List<GovernmentOfficial> officialList;
 	private static String locationText;
 
 	AsyncOfficialsLoader(MainActivity mainActivity){
@@ -31,7 +32,7 @@ public class AsyncOfficialsLoader extends AsyncTask<String, Integer, String> {
 
 	@Override
 	protected void onPostExecute(String s) {
-		List<GovernmentOfficial> officialList = parseJson(s);
+		this.officialList = parseJson(s);
 		mainActivity.updateOfficialList(officialList);
 	}
 
@@ -98,17 +99,17 @@ public class AsyncOfficialsLoader extends AsyncTask<String, Integer, String> {
 						JSONObject addressObj = officialObj.optJSONArray("address").getJSONObject(0);
 						sb = new StringBuilder();
 						sb.append(addressObj.optString("line1"));
-						sb.append(" ");
+						sb.append("\n");
 						if(addressObj.optString("line2").length() > 0) {
 							sb.append(addressObj.optString("line2"));
-							sb.append(" ");
+							sb.append("\n");
 						}
 						if(addressObj.optString("line3").length() > 0) {
 							sb.append(addressObj.optString("line3"));
-							sb.append(" ");
+							sb.append("\n");
 						}
 						sb.append(addressObj.optString("city"));
-						sb.append(" ");
+						sb.append(", ");
 						sb.append(addressObj.optString("state"));
 						sb.append(" ");
 						sb.append(addressObj.optString("zip"));
@@ -134,11 +135,11 @@ public class AsyncOfficialsLoader extends AsyncTask<String, Integer, String> {
 					if(officialObj.optJSONArray("emails") != null) {
 						String email = officialObj.optJSONArray("emails").optString(0);
 						if(email.length() > 0) {
-							g.setPhone(email);
+							g.setEmail(email);
 						}
 					}
 
-					g.setPhotoUrl(officialObj.optString("photoUrl", "UNKNOWN"));
+					g.setPhotoUrl(officialObj.optString("photoUrl"));
 
 					if(officialObj.optJSONArray("channels") != null) {
 						JSONArray channelsArray = officialObj.getJSONArray("channels");
@@ -163,6 +164,10 @@ public class AsyncOfficialsLoader extends AsyncTask<String, Integer, String> {
 
 	public static String getLocationText() {
 		return locationText;
+	}
+
+	public static GovernmentOfficial getOfficial(int index) {
+		return officialList.get(index);
 	}
 
 }

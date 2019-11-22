@@ -1,14 +1,14 @@
 package com.armandogomez.knowyourgovernment;
 
+import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.text.Html;
-import android.text.method.LinkMovementMethod;
 import android.text.util.Linkify;
 import android.view.View;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
 import java.io.IOException;
 import java.util.regex.Matcher;
@@ -20,13 +20,8 @@ public class AboutActivity extends AppCompatActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_about);
-		try {
-			Drawable d = Drawable.createFromStream(getAssets().open("about.png"), null);
-			View v = findViewById(R.id.aboutLayout);
-			v.setBackground(d);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		View v = findViewById(R.id.aboutLayout);
+		v.setBackground(ContextCompat.getDrawable(this, R.drawable.about));
 		setHyperLink();
 	}
 

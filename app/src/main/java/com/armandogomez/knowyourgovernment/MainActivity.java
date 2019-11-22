@@ -19,6 +19,8 @@ import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.Menu;
@@ -50,6 +52,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 	private String addressInput = "";
 	private String locationString;
 	private Address address;
+	private boolean networkStatusOnline = false;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -71,11 +74,28 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 		recyclerView.setAdapter(governmentOfficialAdapter);
 		recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
+		doNetworkCheck();
+
 		if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PERMISSION_GRANTED) {
 			String[] blah = new String[]{Manifest.permission.ACCESS_FINE_LOCATION};
 			ActivityCompat.requestPermissions(this, blah, MY_LOCATION_REQUEST_CODE_ID);
 		} else {
 			setLocation();
+		}
+	}
+
+	private void doNetworkCheck() {
+		ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+		if (cm == null) {
+			Toast.makeText(this, "Cannot Access ConnectivityManager", Toast.LENGTH_SHORT).show();
+			return;
+		}
+
+		NetworkInfo netInfo = cm.getActiveNetworkInfo();
+		if (netInfo != null && netInfo.isConnected()) {
+			this.networkStatusOnline = true;
+		} else {
+			this.networkStatusOnline = false;
 		}
 	}
 
@@ -134,9 +154,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 	@Override
 	public void onClick(View v) {
 		int pos = recyclerView.getChildLayoutPosition(v);
-		GovernmentOfficial official = officialList.get(pos);
-		Intent i = new Intent(Intent.ACTION_VIEW);
-		Toast.makeText(this, official.getName(), Toast.LENGTH_SHORT).show();
+		Intent intent = new Intent(MainActivity.this, GovernmentOfficialActivity.class);
+		intent.putExtra("INDEX", pos);
+		startActivity(intent);
 	}
 
 	@Override
@@ -152,8 +172,23 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 		}
 	}
 
+	private void showNoNetworkDialog() {
+		AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+		builder.setTitle("No Network Connection");
+		builder.setMessage("Data cannot be accessed/loaded without an internet connection.");
+		AlertDialog dialog = builder.create();
+		dialog.show();
+		TextView textView = findViewById(R.id.locText);
+		textView.setText("No Data for Location");
+	}
+
 	@SuppressLint("MissingPermission")
 	private void setLocation() {
+		doNetworkCheck();
+		if(!networkStatusOnline) {
+			showNoNetworkDialog();
+			return;
+		}
 		Location bestLocation = locationManager.getLastKnownLocation("gps");
 		Geocoder geocoder = new Geocoder(this, Locale.getDefault());
 		try {
@@ -164,6 +199,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 		getOfficials(this.address.getPostalCode());
 	}
 	private void getOfficials(String address) {
+		doNetworkCheck();
+		if(!networkStatusOnline) {
+			showNoNetworkDialog();
+			return;
+		}
 		new AsyncOfficialsLoader(MainActivity.this).execute(address);
 	}
 

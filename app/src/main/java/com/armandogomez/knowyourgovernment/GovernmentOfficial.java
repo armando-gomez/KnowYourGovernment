@@ -1,18 +1,18 @@
 package com.armandogomez.knowyourgovernment;
 
 public class GovernmentOfficial {
-	private String name;
-	private String party;
-	private String office;
-	private String address;
-	private String phone;
-	private String website;
-	private String email;
-	private String photoUrl;
-	private String googlePlus;
-	private String facebook;
-	private String twitter;
-	private String youtube;
+	private String name= "";
+	private String party= "";
+	private String office= "";
+	private String address = "";
+	private String phone= "";
+	private String website= "";
+	private String email= "";
+	private String photoUrl= "";
+	private String googlePlus= "";
+	private String facebook= "";
+	private String twitter= "";
+	private String youtube= "";
 
 	GovernmentOfficial() {
 	}
@@ -60,11 +60,11 @@ public class GovernmentOfficial {
 	}
 
 	public void setPhone(String s) {
-		this.address = s;
+		this.phone = s;
 	}
 
 	public void setWebsite(String s) {
-		this.address = s;
+		this.website = s;
 	}
 
 	public void setEmail(String s) {

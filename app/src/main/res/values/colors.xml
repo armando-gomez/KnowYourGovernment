@@ -4,4 +4,7 @@
     <color name="colorPrimaryDark">#7B1FA2</color>
     <color name="colorAccent">#D81B60</color>
     <color name="colorFontWhite">#FFFFFF</color>
+    <color name="democrat">#303F9F</color>
+    <color name="republican">#D32F2F</color>
+    <color name="otherParty">#000000</color>
 </resources>
