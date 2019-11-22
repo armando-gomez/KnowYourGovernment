@@ -154,24 +154,23 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 	@SuppressLint("MissingPermission")
 	private void setLocation() {
-		Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-		if (location != null) {
-			Geocoder geocoder = new Geocoder(this, Locale.getDefault());
-			try {
-				this.address = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1).get(0);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+		Location bestLocation = locationManager.getLastKnownLocation("gps");
+		Geocoder geocoder = new Geocoder(this, Locale.getDefault());
+		try {
+			this.address = geocoder.getFromLocation(bestLocation.getLatitude(), bestLocation.getLongitude(), 1).get(0);
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 		getOfficials(this.address.getPostalCode());
-
 	}
-
 	private void getOfficials(String address) {
 		new AsyncOfficialsLoader(MainActivity.this).execute(address);
 	}
 
 	public void updateOfficialList(List<GovernmentOfficial> _officialList) {
+		if(!this.officialList.isEmpty()) {
+			this.officialList.clear();
+		}
 		if (_officialList != null) {
 			for (GovernmentOfficial g : _officialList) {
 				this.officialList.add(g);

@@ -64,8 +64,7 @@ public class AsyncOfficialsLoader extends AsyncTask<String, Integer, String> {
 		List<GovernmentOfficial> officialList = new ArrayList<>();
 		try {
 			JSONObject outerJson = new JSONObject(s);
-			JSONArray normalizedInputArray = outerJson.getJSONArray("normalizedInput");
-			JSONObject normalizedInputObj = normalizedInputArray.getJSONObject(0);
+			JSONObject normalizedInputObj = outerJson.getJSONObject("normalizedInput");
 			String city = normalizedInputObj.optString("city");
 			String state = normalizedInputObj.optString("state");
 			String zip = normalizedInputObj.optString("zip");
